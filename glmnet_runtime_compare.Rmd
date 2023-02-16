@@ -14,7 +14,7 @@ library(ggplot2)
 here::i_am("Desktop/hpc_tutorial/glmnet_runtime_compare.Rmd")
 ```
 
-## Load `.rds` files 
+## Load results 
 
 ```{r}
 # find the path to this file and result files 
@@ -27,11 +27,11 @@ alpha_list <- c(0.5, 1)
 result_path <- here(root_path, "result")
 folder_list <- list.files(result_path)
 
-# now we load those `rds` files we saved 
+# create combined data file 
+run_time <- c()
 for (alpha in alpha_list) {
   for (i in 1:10) {
-    # create variable names to store each rds file
-    var_name <- paste("alpha", alpha, "seed", i, sep="_")
+    var_name <- "temp_var_name"
     # folder name 
     folder_name <- folder_list[grep(paste("alpha=", alpha, sep=""), folder_list)]
     # names of the rds files 
@@ -40,22 +40,12 @@ for (alpha in alpha_list) {
     rds_name <- here(result_path, folder_name, file_name)
     # assign the loaded rds file to variable names 
     if (file.exists(rds_name)) assign(var_name, readRDS(rds_name))
-  }
-}
-```
-
-## Combine results to one file 
-
-```{r}
-run_time <- c()
-for (alpha in alpha_list) {
-  for (i in 1:10) {
-    var_name <- paste("alpha", alpha, "seed", i, sep="_")
-    output <- eval(parse(text = paste("lapply(",var_name,", function(x) data.frame(time = x$output$time,
-                                               n = x$input$n,
-                                               d = x$input$d,
-                                               seed = x$input$seed,
-                                               alpha = x$input$alpha))", sep = "")))
+    output <- lapply(temp_var_name, 
+                     function(x) data.frame(time = x$output$time,
+                                            n = x$input$n,
+                                            d = x$input$d,
+                                            seed = x$input$seed,
+                                            alpha = x$input$alpha))
     output <- do.call(rbind, output)
     run_time <- rbind(run_time, output)
   }
