@@ -1,2 +1,3 @@
 # hopper_tutorial
-Hopper tutorial for student seminar
+
+In this tutorial we are trying to compare the runtime of R package `glmnet` under various settings with the help of GMU's Hopper HPC clusters. 
