@@ -1,0 +1,116 @@
+---
+title: "Compare `glmnet` runtime"
+author: "Yang Long"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(dplyr)
+library(microbenchmark)
+library(ggplot2)
+
+here::i_am("Desktop/hpc_tutorial/glmnet_runtime_compare.Rmd")
+```
+
+## Load `.rds` files 
+
+```{r}
+# find the path to this file and result files 
+root_path <- here("Desktop", "hpc_tutorial")
+
+# simulation parameters 
+alpha_list <- c(0.5, 1)
+
+# folders where the results are stored 
+result_path <- here(root_path, "result")
+folder_list <- list.files(result_path)
+
+# now we load those `rds` files we saved 
+for (alpha in alpha_list) {
+  for (i in 1:10) {
+    # create variable names to store each rds file
+    var_name <- paste("alpha", alpha, "seed", i, sep="_")
+    # folder name 
+    folder_name <- folder_list[grep(paste("alpha=", alpha, sep=""), folder_list)]
+    # names of the rds files 
+    file_name <- paste("alpha=", alpha, "-task=", i, ".rds", sep="")
+    # entire path 
+    rds_name <- here(result_path, folder_name, file_name)
+    # assign the loaded rds file to variable names 
+    if (file.exists(rds_name)) assign(var_name, readRDS(rds_name))
+  }
+}
+```
+
+## Combine results to one file 
+
+```{r}
+run_time <- c()
+for (alpha in alpha_list) {
+  for (i in 1:10) {
+    var_name <- paste("alpha", alpha, "seed", i, sep="_")
+    output <- eval(parse(text = paste("lapply(",var_name,", function(x) data.frame(time = x$output$time,
+                                               n = x$input$n,
+                                               d = x$input$d,
+                                               seed = x$input$seed,
+                                               alpha = x$input$alpha))", sep = "")))
+    output <- do.call(rbind, output)
+    run_time <- rbind(run_time, output)
+  }
+}
+
+run_time$time <- run_time$time/1e9
+rt <- run_time
+
+# table view  
+alpha_time <- rt %>% 
+  group_by(n,d,alpha) %>% 
+  summarize(avg = mean(time)) %>% 
+  arrange(n, d) %>% 
+  mutate(n = factor(paste0("n = ", n)),
+         alpha = factor(paste0("alpha = ", alpha))) %>% 
+  print(n=Inf)
+```
+
+## Plotting the result 
+
+```{r warning=FALSE, fig.height = 5, fig.width = 10, fig.align = "center", out.width='100%'}
+STYLE_COLOR <- c('alpha = 0.5' = '#0072B2',
+                 'alpha = 1' = '#D55E00')
+
+STYLE_SHAPE <- c('alpha = 0.5' = 17,
+                 'alpha = 1' = 19)
+
+STYLE_LINETYPE <- c('alpha = 0.5' = "solid",
+                    'alpha = 1' = "dashed")
+
+ggplot(alpha_time, aes(x = d, y = avg, color = alpha, fill = alpha, shape = alpha)) + 
+  geom_point(alpha = 0.6, size = 3) + 
+  geom_line(alpha = 0.6, size = 1, aes(linetype = alpha)) + 
+  labs(y = "Time", x = "Number of Dimensions") + 
+  scale_fill_manual(values = STYLE_COLOR) +
+  scale_color_manual(values = STYLE_COLOR) +
+  scale_shape_manual(values = STYLE_SHAPE) +
+  scale_linetype_manual(values = STYLE_LINETYPE) +
+  guides(color=guide_legend(title=""),
+         shape=guide_legend(title=""),
+         fill=guide_legend(title=""),
+         linetype=guide_legend(title="")) + 
+  facet_grid(~ n) + 
+  theme_bw() +
+  theme(panel.background = element_rect(fill = 'transparent', color = NA),
+        plot.background = element_rect(fill = 'transparent', color = NA),
+        legend.position = "bottom",
+        legend.text = element_text(size=11),
+        panel.grid.major = element_line(color = 'gray30', size = rel(0.5), linetype='dotted'),
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = '#ffffff', color = 'gray50', size = 0.3),
+        strip.text = element_text(size = rel(1)),
+        panel.border = element_rect(color = 'gray50', size = 0.3),
+        legend.background = element_blank(),
+        plot.margin = margin(0.2, 0.4, 0.4, 0.2, 'lines'),
+        panel.grid.major.x = element_blank()) 
+
+```
