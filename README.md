@@ -13,13 +13,14 @@ Steps to run this simulation on Hopper:
 
 - step 0: log in and set up R on Hopper: 
   - code for login: `ssh [your Mason NetID]@hopper.orc.gmu.edu` 
+  - go to your scratch folder, which is your "personal playground" on Hopper, by using code `cd /scratch/[Mason NetID]`
   - load R: `module load r` 
   - in R, install the following packages using `install.packages("[package name]")`: `glmnet`, `stringr`, `argparser`, `microbenchmark`
 
 - Step 1: Open Globus and transfer the R file `glmnet_timer.R` and the associated Slurm file `glmnet_timer.slurm` to your Hopper clusters storage space. 
   - to use Globus, log in at https://www.globus.org/ and go to https://www.globus.org/globus-connect-personal to download Globus Connect Personal so Globus can access your local files
   - in the transfer window, select your local space while for the other side, search "gmu ARGO" and select "gmu#ARGO-1.ORC"
-  - make sure to transfer all you files to your personal **scratch** folder instead of home directory (your "scratch folder" is called `/scratch/[Mason NetID]/`) as there is too much traffic in the home directory that can significantly slow you down
+  - make sure to transfer all you files to your personal **scratch** folder instead of home directory as there is too much traffic in the home directory that can significantly slow you down
 - Step 2: Submit your Slurm job. 
   - To submit the Slurm job, run the following code: 
 
