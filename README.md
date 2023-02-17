@@ -17,9 +17,17 @@ Steps to run simulation on Hopper:
   - in R, install the following packages using `install.packages("[package name]")`: `glmnet`, `stringr`, `argparser`, `microbenchmark`
 
 - Step 1: Open Globus and transfer the R file `glmnet_timer.R` and the associated Slurm file `glmnet_timer.slurm` to your Hopper clusters storage space. 
-
-To submit the slurm job, run the following code: 
+  - to use Globus, log in at https://www.globus.org/ and go to https://www.globus.org/globus-connect-personal to download Globus Connect Personal so Globus can access your local files
+  - in the transfer window, select your local space while for the other side, search "gmu ARGO" and select "gmu#ARGO-1.ORC"
+  - make sure to transfer all you files to your personal **scratch** folder instead of home directory (for example, my "scratch folder" is called `/scratch/ylong5/`) as there is too much traffic in the home directory that can significantly slow down your experience
+- Submit your slurm job. 
+  - To submit the slurm job, run the following code: 
 
 `sbatch --array=1-10 glmnet_timer.slurm` 
 
 where `--array` specifies how many tasks you want to run in parallel in this job. 
+
+- Transfer your result files from your result directory to local using Globus. 
+- Play around with the `Rmd` file to create simulation output for research. 
+
+
