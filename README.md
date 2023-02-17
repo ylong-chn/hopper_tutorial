@@ -1,6 +1,6 @@
 # Mini project to get familiar with Hopper
 
-In this tutorial we are trying to compare the runtime of R package `glmnet` under various settings with the help of GMU's Hopper HPC clusters. 
+In this tutorial we will compare the runtime of R package `glmnet` under various settings with the help of GMU's Hopper HPC clusters. 
 
 There are four files in this repository: 
 
@@ -9,7 +9,7 @@ There are four files in this repository:
 - The Slurm file `glmnet_timer.slurm` is the scheduler to run jobs on Hopper;
 - Finally, the `Rmd` file loads the results and generate the summary plot we need for research. 
 
-Steps to run simulation on Hopper: 
+Steps to run this simulation on Hopper: 
 
 - step 0: log in and set up R on Hopper: 
   - code for login: `ssh [your Mason NetID]@hopper.orc.gmu.edu` 
@@ -19,9 +19,9 @@ Steps to run simulation on Hopper:
 - Step 1: Open Globus and transfer the R file `glmnet_timer.R` and the associated Slurm file `glmnet_timer.slurm` to your Hopper clusters storage space. 
   - to use Globus, log in at https://www.globus.org/ and go to https://www.globus.org/globus-connect-personal to download Globus Connect Personal so Globus can access your local files
   - in the transfer window, select your local space while for the other side, search "gmu ARGO" and select "gmu#ARGO-1.ORC"
-  - make sure to transfer all you files to your personal **scratch** folder instead of home directory (for example, my "scratch folder" is called `/scratch/ylong5/`) as there is too much traffic in the home directory that can significantly slow down your experience
-- Step 2: Submit your slurm job. 
-  - To submit the slurm job, run the following code: 
+  - make sure to transfer all you files to your personal **scratch** folder instead of home directory (your "scratch folder" is called `/scratch/[Mason NetID]/`) as there is too much traffic in the home directory that can significantly slow you down
+- Step 2: Submit your Slurm job. 
+  - To submit the Slurm job, run the following code: 
 
 `sbatch --array=1-10 glmnet_timer.slurm` 
 
