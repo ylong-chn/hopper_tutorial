@@ -12,11 +12,11 @@ There are four files in this repository:
 Steps to run this simulation on Hopper: 
 
 - step 0: log in and set up R on Hopper: 
-  - code for login: `ssh [your Mason NetID]@hopper.orc.gmu.edu` 
-  - go to your scratch folder, which is your "personal playground" on Hopper, by using code `cd /scratch/[Mason NetID]`
+  - code for login: `ssh <your Mason NetID>@hopper.orc.gmu.edu` 
+  - go to your scratch folder, which is your "personal playground" on Hopper, by using code `cd /scratch/<Mason NetID>`
   - load R: `module load r` 
   - type `R` to load R on Hopper 
-  - in R, install the following packages using `install.packages("[package name]")`: `glmnet`, `stringr`, `argparser`, `microbenchmark`
+  - in R, install the following packages using `install.packages("<package name>")`: `glmnet`, `stringr`, `argparser`, `microbenchmark`
 
 - Step 1: Open Globus and transfer the R file `glmnet_timer.R` and the associated Slurm file `glmnet_timer.slurm` to your Hopper clusters storage space. 
   - to use Globus, log in at https://www.globus.org/ and go to https://www.globus.org/globus-connect-personal to download Globus Connect Personal so Globus can access your local files
