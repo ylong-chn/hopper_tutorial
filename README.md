@@ -7,6 +7,9 @@ There are four files in this repository:
 - The R file `pre_hopper.R` contains the code we would like to run multiple times on a larger scale; 
 - The R file `glmnet_timer.R` contains the code from previous file but interacts with Hopper to load parameters and save results; 
 - The Slurm file `glmnet_timer.slurm` is the scheduler to run jobs on Hopper;
+
+**make sure to modify Line 27 of the file to put your own gmu email address**
+
 - Finally, the `Rmd` file loads the results and generate the summary plot we need for research. 
 
 Steps to run this simulation on Hopper: 
